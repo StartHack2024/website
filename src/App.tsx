@@ -1,6 +1,7 @@
 import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { useEffect, useRef, useState } from "react";
 import Slider from "./components/slider";
+import { Checkbox } from "./components/Checkbox";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoidGVldmlrIiwiYSI6ImNsdTE3ZnA2czBiOXoya21uMDJkbDg3Z2gifQ.7tv5DJpsbHVZUSfMQgvoPg";
@@ -98,8 +99,31 @@ export default function App() {
 
   return (
     <>
-      <div ref={mapContainer} style={{ height: 800 }} />
-      <Slider onChange={onChangeYear} />
+      <div className="flex row-auto h-dvh relative">
+        <aside
+          style={{ width: 300 }}
+          className="bg-slate-900 text-slate-200 p-6"
+        >
+          <h1 className="text-2xl mb-8">Visualization</h1>
+          <Checkbox label="Landmass" description="Landmass from 2002 to 2022" />
+          <Checkbox
+            label="Burn Area"
+            description="Burn areas from 2002 to 2022"
+          />
+          <Checkbox label="Population" description="Population from 2022" />
+          <Checkbox
+            label="Protected Areas"
+            description="Protected areas from 2024"
+          />
+        </aside>
+
+        <div ref={mapContainer} className="flex-1" />
+        <div className="absolute  bottom-8 left-0 right-0 flex justify-center">
+          <div className="bg-slate-200 px-10 py-1 rounded-full ">
+            <Slider className="" onChange={onChangeYear} />
+          </div>
+        </div>
+      </div>
     </>
   );
 }

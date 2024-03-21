@@ -17,12 +17,13 @@ function valuetext(value: number) {
 }
 
 interface Props {
+  className?: string;
   onChange: (year: number) => void;
 }
 
 export default function DiscreteSliderMarks(props: Props) {
   return (
-    <Box sx={{ width: 300 }}>
+    <Box sx={{ width: "50vw" }} className={props.className}>
       <Slider
         aria-label="Custom marks"
         defaultValue={2022}
