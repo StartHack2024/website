@@ -1,5 +1,6 @@
 import mapboxgl from "mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { useEffect, useRef, useState } from "react";
+import Slider from "./components/slider";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoidGVldmlrIiwiYSI6ImNsdTE3ZnA2czBiOXoya21uMDJkbDg3Z2gifQ.7tv5DJpsbHVZUSfMQgvoPg";
@@ -44,6 +45,7 @@ export default function App() {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/teevik/clu17y7ol00nu01qsdb4k6oyk",
+      // style: "mapbox://styles/mapbox/satellite-v9",
       center: [-51, -9],
       zoom: 4,
     });
@@ -53,6 +55,7 @@ export default function App() {
       for (const [year, url] of Object.entries(burnMaps)) {
         map.current.addSource(`burn-${year}`, {
           type: "raster",
+          // tileSize: 256,
           url,
         });
 
@@ -62,7 +65,7 @@ export default function App() {
           source: `burn-${year}`,
           paint: {
             "raster-opacity": 0, // Adjust the opacity as needed
-            "raster-color": "#ff6600",
+            "raster-color": "#ff4400",
             "raster-opacity-transition": { duration: 200 },
           },
         });
@@ -77,23 +80,6 @@ export default function App() {
   });
 
   const [currentYear, setCurrentyear] = useState(2022);
-
-  function toggle(year: number) {
-    const opacity = map.current.getPaintProperty(
-      burnLayer(year),
-      "raster-opacity"
-    );
-
-    if (opacity > 0) {
-      map.current.setPaintProperty(burnLayer(year), "raster-opacity", 0);
-    } else {
-      map.current.setPaintProperty(
-        burnLayer(year),
-        "raster-opacity",
-        burnOpacity
-      );
-    }
-  }
 
   function onChangeYear(year: number) {
     map.current.setPaintProperty(
@@ -112,15 +98,8 @@ export default function App() {
 
   return (
     <>
-      <input
-        type="range"
-        min="2003"
-        max="2022"
-        defaultValue={2022}
-        onChange={(e) => onChangeYear(parseInt(e.target.value))}
-        style={{ width: "100%" }}
-      />
       <div ref={mapContainer} style={{ height: 800 }} />
+      <Slider onChange={onChangeYear} />
     </>
   );
 }
