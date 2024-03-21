@@ -164,21 +164,25 @@ export default function App() {
               id="landmass"
               label="Landmass"
               description="Land cover from 2003 to 2022, characterizing different types of land surface such as water, forest, and urban areas."
+              checked={false}
             />
             <Checkbox
               id="burning"
               label="Burned Area"
               description="Burned areas from 2003 to 2022, characterized by deposits of charcoal and ash, removal of vegetation, and alteration of the vegetation structure."
+              checked={true}
             />
             <Checkbox
               id="population"
               label="Population"
               description="Population from 2022, estimates total number of people living in the area."
+              checked={false}
             />
             <Checkbox
               id="protected-areas"
               label="Protected Areas"
               description="Protected areas from 2024, terrestrial and marine protected areas"
+              checked={false}
             />
           </div>
           <SwitchComponent
