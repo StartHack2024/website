@@ -84,11 +84,12 @@ export default function App() {
       setStyleLoadChanged((prev) => !prev);
     });
 
-    map.current.on("click", (e)=>{
+    map.current.on("click", (e) => {
       let coordinates = e.lngLat;
-      window.open(`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${coordinates.lat},${coordinates.lng}`);
-      
-    })
+      window.open(
+        `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${coordinates.lat},${coordinates.lng}`
+      );
+    });
   });
 
   const [currentYear, setCurrentyear] = useState(2022);
@@ -142,6 +143,27 @@ export default function App() {
       });
     }
 
+    map.current.addSource(`population`, {
+      type: "raster",
+      // tileSize: 256,
+      url: "mapbox://teevik.4jiblzax",
+    });
+
+    map.current.addLayer({
+      id: "population-layer",
+      type: "raster",
+
+      source: `population`,
+      // fil
+      paint: {
+        "raster-opacity": 1, // Adjust the opacity as needed
+        "raster-color": "#10c910",
+        "raster-color-range": [0, 10],
+        "raster-opacity-transition": { duration: 200 },
+        // "raster-emissive-strength": 100,
+      },
+    });
+
     map.current.setPaintProperty(
       burnLayer(currentYear),
       "raster-opacity",
@@ -174,7 +196,7 @@ export default function App() {
               id="population"
               label="Population"
               description="Population from 2022, estimates total number of people living in the area."
-              checked={false}
+              checked={true}
             />
             <Checkbox
               id="protected-areas"
