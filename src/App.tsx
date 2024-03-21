@@ -30,6 +30,29 @@ const burnMaps = {
   2022: "mapbox://teevik.6j9q789e",
 };
 
+const landmassMaps = {
+  2003: "mapbox://teevik.4n8ubv7o",
+  2004: "mapbox://teevik.4vi3d5dg",
+  2005: "mapbox://teevik.1yoxx5oq",
+  2006: "mapbox://teevik.awdrr4ou",
+  2007: "mapbox://teevik.74o4ye2b",
+  2008: "mapbox://",
+  2009: "mapbox://",
+  2010: "mapbox://",
+  2011: "mapbox://",
+  2012: "mapbox://",
+  2013: "mapbox://",
+  2014: "mapbox://",
+  2015: "mapbox://",
+  2016: "mapbox://",
+  2017: "mapbox://",
+  2018: "mapbox://",
+  2019: "mapbox://",
+  2020: "mapbox://",
+  2021: "mapbox://",
+  2022: "mapbox://",
+};
+
 const initialYear = 2022;
 const burnOpacity = 0.85;
 
@@ -40,6 +63,9 @@ function burnLayer(year: number | string) {
 export default function App() {
   const mapContainer = useRef(null);
   const map = useRef<mapboxgl.Map>(null);
+
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const [styleLoadChanged, setStyleLoadChanged] = useState(false);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -53,31 +79,11 @@ export default function App() {
     });
 
     map.current.on("load", () => {
-      // Add all layers
-      for (const [year, url] of Object.entries(burnMaps)) {
-        map.current.addSource(`burn-${year}`, {
-          type: "raster",
-          // tileSize: 256,
-          url,
-        });
+      setHasLoaded(true);
+    });
 
-        map.current.addLayer({
-          id: burnLayer(year),
-          type: "raster",
-          source: `burn-${year}`,
-          paint: {
-            "raster-opacity": 0, // Adjust the opacity as needed
-            "raster-color": "#ff4400",
-            "raster-opacity-transition": { duration: 200 },
-          },
-        });
-      }
-
-      map.current.setPaintProperty(
-        burnLayer(initialYear),
-        "raster-opacity",
-        burnOpacity
-      );
+    map.current.on("style.load", () => {
+      setStyleLoadChanged((prev) => !prev);
     });
   });
 
@@ -98,28 +104,74 @@ export default function App() {
     setCurrentyear(year);
   }
 
+  const [enableSatellite, setEnableSatellite] = useState(false);
+
+  useEffect(() => {
+    if (!hasLoaded) return;
+
+    map.current.setStyle(
+      enableSatellite
+        ? "mapbox://styles/mapbox/satellite-v9"
+        : "mapbox://styles/teevik/clu17y7ol00nu01qsdb4k6oyk"
+    );
+  }, [enableSatellite]);
+
+  useEffect(() => {
+    if (!hasLoaded) return;
+
+    for (const [year, url] of Object.entries(burnMaps)) {
+      map.current.addSource(`burn-${year}`, {
+        type: "raster",
+        // tileSize: 256,
+        url,
+      });
+
+      map.current.addLayer({
+        id: burnLayer(year),
+        type: "raster",
+        source: `burn-${year}`,
+        paint: {
+          "raster-opacity": 0, // Adjust the opacity as needed
+          "raster-color": "#ff4400",
+          "raster-opacity-transition": { duration: 200 },
+        },
+      });
+    }
+
+    map.current.setPaintProperty(
+      burnLayer(currentYear),
+      "raster-opacity",
+      burnOpacity
+    );
+  }, [hasLoaded, styleLoadChanged]);
+
   return (
     <>
       <div className="flex row-auto h-dvh relative">
         <aside
           style={{ width: 300 }}
-          className="bg-slate-900 text-slate-200 p-6 flex flex-col justify-between"
+          className="bg-slate-900 text-slate-200 p-6 py-8 flex flex-col justify-between"
         >
           <div>
-            
-          <h1 className="text-2xl mb-8">Visualization</h1>
-          <Checkbox label="Landmass" description="Landmass from 2002 to 2022" />
-          <Checkbox
-            label="Burn Area"
-            description="Burn areas from 2002 to 2022"
-          />
-          <Checkbox label="Population" description="Population from 2022" />
-          <Checkbox
-            label="Protected Areas"
-            description="Protected areas from 2024"
-          />
+            <h1 className="text-2xl mb-8">Visualization</h1>
+            <Checkbox
+              label="Landmass"
+              description="Landmass from 2002 to 2022"
+            />
+            <Checkbox
+              label="Burn Area"
+              description="Burn areas from 2002 to 2022"
+            />
+            <Checkbox label="Population" description="Population from 2022" />
+            <Checkbox
+              label="Protected Areas"
+              description="Protected areas from 2024"
+            />
           </div>
-          <SwitchComponent />
+          <SwitchComponent
+            checked={enableSatellite}
+            onChange={setEnableSatellite}
+          />
         </aside>
 
         <div ref={mapContainer} className="flex-1" />
