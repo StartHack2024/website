@@ -53,7 +53,6 @@ const landmassMaps = {
   2022: "mapbox://",
 };
 
-const initialYear = 2022;
 const burnOpacity = 0.85;
 
 function burnLayer(year: number | string) {
@@ -73,7 +72,6 @@ export default function App() {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/teevik/clu17y7ol00nu01qsdb4k6oyk",
-      // style: "mapbox://styles/mapbox/satellite-v9",
       center: [-51, -9],
       zoom: 4,
     });
