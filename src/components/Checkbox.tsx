@@ -3,10 +3,11 @@ interface CheckboxProps {
   description: string;
   id: string;
   checked: boolean;
+  colour: string;
 }
 
 export function Checkbox(props: CheckboxProps) {
-  const { description, label, id, checked } = props;
+  const { description, label, id, checked, colour } = props;
 
   return (
     <div className="relative flex items-start mb-2">
@@ -21,9 +22,12 @@ export function Checkbox(props: CheckboxProps) {
         />
       </div>
       <div className="ml-3 text-sm leading-6">
-        <label htmlFor={id} className="font-medium text-slate-100">
-          {label}
-        </label>
+        <div className="flex flex-row items-center gap-1">
+          <label htmlFor={id} className="font-medium text-slate-100">
+            {label}
+          </label>
+          <div className={`w-3 h-3 ${colour} rounded-full`}></div>
+        </div>
         <p className="text-slate-500">{description}</p>
       </div>
     </div>
