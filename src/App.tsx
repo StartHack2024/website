@@ -137,7 +137,7 @@ export default function App() {
         source: `burn-${year}`,
         paint: {
           "raster-opacity": 0, // Adjust the opacity as needed
-          "raster-color": "#ff4400",
+          "raster-color": "#ef4444",
           "raster-opacity-transition": { duration: 200 },
         },
       });
@@ -156,7 +156,7 @@ export default function App() {
       source: `population`,
       paint: {
         "raster-opacity": 1, // Adjust the opacity as needed
-        "raster-color": "#10c910",
+        "raster-color": "#3b82f6",
         "raster-color-range": [0, 10],
         "raster-opacity-transition": { duration: 200 },
         // "raster-emissive-strength": 100,
@@ -176,7 +176,7 @@ export default function App() {
       "source-layer": "protected_areas-cej619",
 
       paint: {
-        "fill-color": "#ad38e7",
+        "fill-color": "#ec4899",
         "fill-opacity": 0.3,
       },
     });
@@ -198,25 +198,18 @@ export default function App() {
           <div>
             <h1 className="text-2xl mb-8">Datasets</h1>
             <Checkbox
-              id="landmass"
-              label="Landmass"
-              description="Land cover from 2003 to 2022, characterizing different types of land surface such as water, forest, and urban areas."
-              checked={false}
-              colour="bg-blue-500"
-            />
-            <Checkbox
               id="burning"
               label="Burned Area"
               description="Burned areas from 2003 to 2022, characterized by deposits of charcoal and ash, removal of vegetation, and alteration of the vegetation structure."
               checked={true}
-              colour="bg-yellow-500"
+              colour="bg-red-500"
             />
             <Checkbox
               id="population"
               label="Population"
               description="Population from 2022, estimates total number of people living in the area."
               checked={true}
-              colour="bg-green-400"
+              colour="bg-blue-500"
             />
             <Checkbox
               id="protected-areas"
