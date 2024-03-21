@@ -4,63 +4,122 @@ import { useEffect, useRef, useState } from "react";
 mapboxgl.accessToken =
   "pk.eyJ1IjoidGVldmlrIiwiYSI6ImNsdTE3ZnA2czBiOXoya21uMDJkbDg3Z2gifQ.7tv5DJpsbHVZUSfMQgvoPg";
 
+const burnMaps = {
+  2003: "mapbox://teevik.3zurb5kg",
+  2004: "mapbox://teevik.7gfztcfr",
+  2005: "mapbox://teevik.3foiefy4",
+  2006: "mapbox://teevik.atm4mak8",
+  2007: "mapbox://teevik.4be5og4r",
+  2008: "mapbox://teevik.7pvy3f80",
+  2009: "mapbox://teevik.3kmqfwd2",
+  2010: "mapbox://teevik.4vpoaycj",
+  2011: "mapbox://teevik.8h7qqdqa",
+  2012: "mapbox://teevik.073jfw9e",
+  2013: "mapbox://teevik.4yjpymud",
+  2014: "mapbox://teevik.5r7avypp",
+  2015: "mapbox://teevik.aajsivfk",
+  2016: "mapbox://teevik.d872cdfm",
+  2017: "mapbox://teevik.5lkk1nbf",
+  2018: "mapbox://teevik.3lqnqzig",
+  2019: "mapbox://teevik.andhdddk",
+  2020: "mapbox://teevik.2z8nbtqv",
+  2021: "mapbox://teevik.5oyivw6y",
+  2022: "mapbox://teevik.6j9q789e",
+};
+
+const initialYear = 2022;
+const burnOpacity = 0.85;
+
+function burnLayer(year: number | string) {
+  return `burn-${year}-layer`;
+}
+
 export default function App() {
   const mapContainer = useRef(null);
   const map = useRef<mapboxgl.Map>(null);
-  // const [lng, setLng] = useState(-51);
-  // const [lat, setLat] = useState(-9);
-  // const [zoom, setZoom] = useState(4);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      // style: "mapbox://styles/mapbox/streets-v12",
       style: "mapbox://styles/teevik/clu17y7ol00nu01qsdb4k6oyk",
       center: [-51, -9],
       zoom: 4,
     });
 
     map.current.on("load", () => {
-      // https://cdn.discordapp.com/attachments/1216498279072792668/1220356400950284410/barea2003_bra.tif?ex=660ea477&is=65fc2f77&hm=ef267d23e32f1bf2e1ff5ae070e6c2a57ed805c42d01317027a5de75866b3624&
+      // Add all layers
+      for (const [year, url] of Object.entries(burnMaps)) {
+        map.current.addSource(`burn-${year}`, {
+          type: "raster",
+          url,
+        });
 
-      map.current.addSource("burn-2002", {
-        type: "raster",
-        // Use the URL to your hosted GeoTIFF or the Tileset ID from Mapbox Studio
-        url: "mapbox://teevik.1fv4f9vu",
-        // tileSize: 256,
-      });
+        map.current.addLayer({
+          id: burnLayer(year),
+          type: "raster",
+          source: `burn-${year}`,
+          paint: {
+            "raster-opacity": 0, // Adjust the opacity as needed
+            "raster-color": "#ff6600",
+            "raster-opacity-transition": { duration: 200 },
+          },
+        });
+      }
 
-      map.current.addLayer({
-        id: "burn-2002-layer",
-        type: "raster",
-        source: "burn-2002",
-        paint: {
-          "raster-opacity": 0.85, // Adjust the opacity as needed
-          "raster-color": "#ff6600",
-          "raster-opacity-transition": { duration: 500 },
-          // "raster-fade-duration": 500, // 500 milliseconds = 1/2 seconds
-        },
-      });
+      map.current.setPaintProperty(
+        burnLayer(initialYear),
+        "raster-opacity",
+        burnOpacity
+      );
     });
   });
 
-  const [isVisible, setIsVisible] = useState(true);
+  const [currentYear, setCurrentyear] = useState(2022);
 
-  function toggle() {
-    if (isVisible) {
-      map.current.setPaintProperty("burn-2002-layer", "raster-opacity", 0);
+  function toggle(year: number) {
+    const opacity = map.current.getPaintProperty(
+      burnLayer(year),
+      "raster-opacity"
+    );
+
+    if (opacity > 0) {
+      map.current.setPaintProperty(burnLayer(year), "raster-opacity", 0);
     } else {
-      map.current.setPaintProperty("burn-2002-layer", "raster-opacity", 0.85);
+      map.current.setPaintProperty(
+        burnLayer(year),
+        "raster-opacity",
+        burnOpacity
+      );
     }
+  }
 
-    setIsVisible(!isVisible);
+  function onChangeYear(year: number) {
+    map.current.setPaintProperty(
+      `burn-${currentYear}-layer`,
+      "raster-opacity",
+      0
+    );
+    map.current.setPaintProperty(
+      burnLayer(year),
+      "raster-opacity",
+      burnOpacity
+    );
+
+    setCurrentyear(year);
   }
 
   return (
     <>
-      <button onClick={toggle}>Toggle</button>
+      <input
+        type="range"
+        min="2003"
+        max="2022"
+        defaultValue={2022}
+        onChange={(e) => onChangeYear(parseInt(e.target.value))}
+        style={{ width: "100%" }}
+      />
       <div ref={mapContainer} style={{ height: 800 }} />
     </>
   );
