@@ -85,6 +85,12 @@ export default function App() {
     map.current.on("style.load", () => {
       setStyleLoadChanged((prev) => !prev);
     });
+
+    map.current.on("click", (e)=>{
+      let coordinates = e.lngLat;
+      window.open(`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${coordinates.lat},${coordinates.lng}`);
+      
+    })
   });
 
   const [currentYear, setCurrentyear] = useState(2022);
@@ -183,6 +189,9 @@ export default function App() {
 
         <div className="flex flex-1 relative">
           <div ref={mapContainer} className="flex-1" />
+          <div className="absolute right-0 top-0 m-3 px-4 py-1 text-l font-bold  bg-slate-50 rounded-full shadow-xl">
+            {currentYear}
+          </div>
           <div className="absolute  bottom-8 left-0 right-0 flex justify-center pointer-events-none">
             <div className="bg-slate-200 px-10 py-1 rounded-full ">
               <Slider className="pointer-events-auto" onChange={onChangeYear} />
