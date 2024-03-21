@@ -1,16 +1,17 @@
 interface CheckboxProps {
   label: string;
   description: string;
+  id: string;
 }
 
 export function Checkbox(props: CheckboxProps) {
-  const { description, label } = props;
+  const { description, label, id } = props;
 
   return (
     <div className="relative flex items-start mb-2">
       <div className="flex h-6 items-center">
         <input
-          id="comments"
+          id={id}
           aria-describedby="comments-description"
           name="comments"
           type="checkbox"
@@ -18,12 +19,10 @@ export function Checkbox(props: CheckboxProps) {
         />
       </div>
       <div className="ml-3 text-sm leading-6">
-        <label htmlFor="comments" className="font-medium text-slate-100">
+        <label htmlFor={id} className="font-medium text-slate-100">
           {label}
         </label>
-        <p id="comments-description" className="text-slate-500">
-          {description}
-        </p>
+        <p className="text-slate-500">{description}</p>
       </div>
     </div>
   );

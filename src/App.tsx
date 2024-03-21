@@ -153,17 +153,24 @@ export default function App() {
           className="bg-slate-900 text-slate-200 p-6 py-8 flex flex-col justify-between"
         >
           <div>
-            <h1 className="text-2xl mb-8">Visualization</h1>
+            <h1 className="text-2xl mb-8">Datasets</h1>
             <Checkbox
+              id="landmass"
               label="Landmass"
               description="Landmass from 2002 to 2022"
             />
             <Checkbox
-              label="Burn Area"
-              description="Burn areas from 2002 to 2022"
+              id="burning"
+              label="Burned Area"
+              description="Burned areas from 2003 to 2022, characterized by deposits of charcoal and ash, removal of vegetation, and alteration of the vegetation structure."
             />
-            <Checkbox label="Population" description="Population from 2022" />
             <Checkbox
+              id="population"
+              label="Population"
+              description="Population from 2022"
+            />
+            <Checkbox
+              id="protected-areas"
               label="Protected Areas"
               description="Protected areas from 2024"
             />
@@ -174,10 +181,12 @@ export default function App() {
           />
         </aside>
 
-        <div ref={mapContainer} className="flex-1" />
-        <div className="absolute  bottom-8 left-0 right-0 flex justify-center pointer-events-none">
-          <div className="bg-slate-200 px-10 py-1 rounded-full ">
-            <Slider className="pointer-events-auto" onChange={onChangeYear} />
+        <div className="flex flex-1 relative">
+          <div ref={mapContainer} className="flex-1" />
+          <div className="absolute  bottom-8 left-0 right-0 flex justify-center pointer-events-none">
+            <div className="bg-slate-200 px-10 py-1 rounded-full ">
+              <Slider className="pointer-events-auto" onChange={onChangeYear} />
+            </div>
           </div>
         </div>
       </div>
