@@ -66,6 +66,10 @@ export default function App() {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [styleLoadChanged, setStyleLoadChanged] = useState(false);
 
+  const [showBurnedAreas, setShowBurnedAreas] = useState(true);
+  const [showPopulation, setShowPopulation] = useState(true);
+  const [showProtectedAreas, setShowProtectedAreas] = useState(false);
+
   useEffect(() => {
     if (map.current) return; // initialize map only once
 
@@ -120,6 +124,38 @@ export default function App() {
         : "mapbox://styles/teevik/clu17y7ol00nu01qsdb4k6oyk"
     );
   }, [enableSatellite]);
+
+  useEffect(() => {
+    if (!hasLoaded) return;
+
+    for (const year of Object.keys(burnMaps)) {
+      map.current.setLayoutProperty(
+        burnLayer(year),
+        "visibility",
+        showBurnedAreas ? "visible" : "none"
+      );
+    }
+  }, [hasLoaded, showBurnedAreas]);
+
+  useEffect(() => {
+    if (!hasLoaded) return;
+
+    map.current.setLayoutProperty(
+      "population-layer",
+      "visibility",
+      showPopulation ? "visible" : "none"
+    );
+  }, [hasLoaded, showPopulation]);
+
+  useEffect(() => {
+    if (!hasLoaded) return;
+
+    map.current.setLayoutProperty(
+      "protected-areas-layer",
+      "visibility",
+      showProtectedAreas ? "visible" : "none"
+    );
+  }, [hasLoaded, showProtectedAreas]);
 
   useEffect(() => {
     if (!hasLoaded) return;
@@ -181,6 +217,12 @@ export default function App() {
       },
     });
 
+    map.current.setLayoutProperty(
+      "protected-areas-layer",
+      "visibility",
+      showProtectedAreas ? "visible" : "none"
+    );
+
     map.current.setPaintProperty(
       burnLayer(currentYear),
       "raster-opacity",
@@ -201,21 +243,24 @@ export default function App() {
               id="burning"
               label="Burned Area"
               description="Burned areas from 2003 to 2022, characterized by deposits of charcoal and ash, removal of vegetation, and alteration of the vegetation structure."
-              checked={true}
+              checked={showBurnedAreas}
+              onChange={setShowBurnedAreas}
               colour="bg-red-500"
             />
             <Checkbox
               id="population"
               label="Population"
               description="Population from 2022, estimates total number of people living in the area."
-              checked={true}
+              checked={showPopulation}
+              onChange={setShowPopulation}
               colour="bg-blue-500"
             />
             <Checkbox
               id="protected-areas"
               label="Protected Areas"
               description="Protected areas from 2024, terrestrial and marine protected areas"
-              checked={false}
+              checked={showProtectedAreas}
+              onChange={setShowProtectedAreas}
               colour="bg-pink-500"
             />
           </div>
