@@ -154,13 +154,30 @@ export default function App() {
       type: "raster",
 
       source: `population`,
-      // fil
       paint: {
         "raster-opacity": 1, // Adjust the opacity as needed
         "raster-color": "#10c910",
         "raster-color-range": [0, 10],
         "raster-opacity-transition": { duration: 200 },
         // "raster-emissive-strength": 100,
+      },
+    });
+
+    map.current.addSource(`protected-areas`, {
+      type: "vector",
+      url: "mapbox://teevik.cnohapl1",
+    });
+
+    map.current.addLayer({
+      id: "protected-areas-layer",
+      type: "fill",
+
+      source: "protected-areas",
+      "source-layer": "protected_areas-cej619",
+
+      paint: {
+        "fill-color": "#ad38e7",
+        "fill-opacity": 0.3,
       },
     });
 
